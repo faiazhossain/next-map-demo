@@ -1,95 +1,65 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import 'maplibre-gl/dist/maplibre-gl.css';
+const MAP_KEY = process.env.NEXT_PUBLIC_MAP_API_ACCESS_TOKEN;
+import Map, {GeolocateControl,GeolocateResultEvent} from 'react-map-gl/maplibre';
 
 export default function Home() {
+  const mapRef = useRef(null)
+  const map = mapRef.current
+  const [centerPoint,setCenterPoint] = useState([]);
+  const geoControlRef = useRef();
+
+  useEffect(() => {
+    if (map !== null && centerPoint?.length > 0) {
+      // Fly to Center Point
+      map?.flyTo({
+        center: centerPoint,
+        essential: true,
+        zoom: 13
+      })
+    }
+  }, [centerPoint, map])
+
+
+  
+  useEffect(() => {
+    // Add Barikoi marker on map load
+    if (map) {
+      const marker = new bkoigl.Marker({ draggable: true })
+        .setLngLat([90.3938010872331, 23.821600277500405])
+        .addTo(map);
+    }
+  }, [map]);
+
+  const clickToFly = ()=>{
+    setCenterPoint([90.36402004477634, 23.823730671721]);
+  }
+
+  useEffect(() => {
+    console.log('clicked')
+    geoControlRef.current?.trigger();
+  }, [centerPoint]);
+
+  const clickedLocation = ()=>{
+    console.log('clicked')
+  }
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+    <main>
+      <Map
+      // ref={ mapRef }
+      initialViewState={{
+        longitude: 90,
+        latitude: 23,
+        zoom: 6
+      }}
+      style={{width: '98vw', height: '98vh'}}
+      mapStyle="https://map.barikoi.com/styles/osm-liberty/style.json?key=NDE2NzpVNzkyTE5UMUoy"
+    >
+      <GeolocateControl style={{fontSize:"48px"}}/>
+      </Map>   
+    <button onClick={clickToFly}>Click</button>
     </main>
   )
 }
