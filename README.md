@@ -1,5 +1,6 @@
 ## Clone the repo 
-## Then open cmd prompt and type ```npm install``` to the cloned folder
+## Then open cmd prompt and type ```git checkout marker```.
+## And type ```npm install``` to the cloned folder
 ## create ```.env.local``` file and give your api key to ```.env.local``` file
 - Format will be ``` NEXT_PUBLIC_MAP_API_ACCESS_TOKEN=[YOUR_API_KEY] ```
 
