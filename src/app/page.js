@@ -22,15 +22,6 @@ export default function Home() {
     }
   }, [centerPoint, map]);
 
-  // useEffect(() => {
-  //   // Add Barikoi marker on map load
-  //   if (map) {
-  //     const marker = new bkoigl.Marker({ draggable: true })
-  //       .setLngLat([90.3938010872331, 23.821600277500405])
-  //       .addTo(map);
-  //   }
-  // }, [map]);
-
   const clickToFly = () => {
     setCenterPoint([90.36402004477634, 23.823730671721]);
   };
@@ -50,7 +41,7 @@ export default function Home() {
           zoom: 6,
         }}
         style={{ width: "98vw", height: "94vh" }}
-        mapStyle="https://map.barikoi.com/styles/osm-liberty/style.json?key=NDE2NzpVNzkyTE5UMUoy"
+        mapStyle={`https://map.barikoi.com/styles/osm-liberty/style.json?key=${MAP_KEY}`}
       >
         <GeolocateControl style={{ fontSize: "48px" }} />
       </Map>
