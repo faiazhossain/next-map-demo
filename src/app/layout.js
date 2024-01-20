@@ -10,14 +10,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Head>
+      <body suppressHydrationWarning={true}>
         <link
-          rel="stylesheet preload"
+          rel="stylesheet"
           href="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.css"
-          as="style"
         />
-      </Head>
-      <body>
         <Script
           src="https://cdn.barikoi.com/bkoi-gl-js/dist/bkoi-gl.js"
           strategy="beforeInteractive"
