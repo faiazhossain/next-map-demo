@@ -1,6 +1,6 @@
 ## Clone the repo
 
-## Then open cmd prompt and type `git checkout marker`.
+## Then open cmd prompt and type `git checkout custom-marker`.
 
 ## And type `npm install` to the cloned folder
 
@@ -10,4 +10,4 @@
 
 - Run your project you will see a map like this
 
-![Barikoi Marker](https://github.com/faiazhossain/next-map-demo/blob/marker/barikoi%20marker.png)
+![Barikoi Custom Marker](https://github.com/faiazhossain/next-map-demo/blob/custom-marker/barikoi%custom%marker.png)
