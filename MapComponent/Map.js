@@ -29,8 +29,11 @@ const MapGL = () => {
     });
 
     // Add Controls
-    mapRef.current.addControl(new window.bkoigl.NavigationControl(), 'bottom-right')
-    mapRef.current.addControl(new window.bkoigl.FullscreenControl())
+    mapRef.current.addControl(
+      new window.bkoigl.NavigationControl(),
+      "bottom-right"
+    );
+    mapRef.current.addControl(new window.bkoigl.FullscreenControl());
 
     // On Load
     mapRef.current.on("load", () => {
@@ -42,20 +45,26 @@ const MapGL = () => {
         .setLngLat([lng, lat])
         .setRotation(10) // if you want to rotate the marker
         .addTo(mapRef.current);
+
+      // Uncomment the below code If you want to get longitude and latitude when draged.
+
+      // marker.on("dragend", () => {
+      //   console.log(marker._lngLat);
+      // });
     });
-  }, [API_KEY, lat, lng, zoom])
+  }, [API_KEY, lat, lng, zoom]);
 
   // Destroy Map
   const _destroyMap = () => {
     // Remove Map Instance
-    mapRef.current.remove()
-  }
+    mapRef.current.remove();
+  };
 
   useEffect(() => {
     _createMap();
     return () => {
       _destroyMap();
-    }
+    };
   }, [API_KEY, lng, lat, zoom, _createMap]);
 
   return (
@@ -63,5 +72,5 @@ const MapGL = () => {
       <div ref={mapContainerRef} className="map" />
     </div>
   );
-}
-export default MapGL
+};
+export default MapGL;
