@@ -96,7 +96,6 @@ const MapGL = () => {
   return (
     <div className="map-wrap">
       <div ref={mapContainerRef} className="map" />
-      <button>Add popup</button>
     </div>
   );
 };
