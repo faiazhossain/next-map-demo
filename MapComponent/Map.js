@@ -21,78 +21,14 @@ const MapGL = () => {
     {
       longitude: 90.36408032377143,
       latitude: 23.82374446922343,
-      type: 'default'
+      type: "default",
     },
     {
       longitude: 90.36521608172615,
       latitude: 23.818266581635168,
-      type: 'food'
-    }
-  ])
-
-  // Create Marker Instance
-  const _createMarker = useCallback((data) => {
-    if (!data) {
-      return null
-    }
-
-    if (!data.longitude || !data.latitude) {
-      return null
-    }
-
-    const lngLat = [data.longitude, data.latitude]
-
-    // Create Marker Element
-    const markerElement = _createMarkerElement(data)
-
-    // Add Marker
-    const marker = new window.bkoigl.Marker(markerElement)
-      .setLngLat(lngLat)
-
-    return { marker, data }
-  }, [])
-
-
-  // Render Markers
-  const _renderMarkers = useCallback((markerData) => {
-    if (!markerData || markerData.length <= 0) {
-      return
-    }
-
-    // Create Markers
-    markerData.forEach((m) => {
-      const marker = _createMarker(m)
-      if (marker && marker.marker) {
-        marker.marker.addTo(mapRef.current)
-      }
-    })
-  }, [_createMarker])
-
-
-  // Create Marker Element
-  const _createMarkerElement = (data) => {
-    let iconFile = 'default.png'
-    const type = data && data.type ? data.type.split(',')[0].toLowerCase() : ''
-
-    if (!iconFile) {
-      return null
-    }
-
-    if (type) {
-      iconFile = `${type}.png`
-    }
-
-
-    // Create a DOM element for marker
-    const icon = document.createElement('img')
-    icon.className = 'maplibregl-marker'
-    icon.src = `/icons/${iconFile}`
-    icon.style.width = iconFile === 'default.png' ? '45px' : '22px'
-    icon.style.height = iconFile === 'default.png' ? '45px' : '30px'
-    icon.style.cursor = 'pointer'
-
-    return icon
-  }
+      type: "food",
+    },
+  ]);
 
   // Create Map
   const _createMap = useCallback(() => {
@@ -103,34 +39,65 @@ const MapGL = () => {
       zoom: zoom,
       accessToken: `${API_KEY}`,
     });
-
+    // Add Popup
+    const popup = new window.bkoigl.Popup({ focusAfterOpen: false });
+    addPopup(popup, "<h3>Barikoi HQ</h3>", 90.36402, 23.823731);
     // Add Controls
-    mapRef.current.addControl(new window.bkoigl.NavigationControl(), 'bottom-right')
-    mapRef.current.addControl(new window.bkoigl.FullscreenControl())
+    mapRef.current.addControl(
+      new window.bkoigl.NavigationControl(),
+      "bottom-right"
+    );
+    mapRef.current.addControl(new window.bkoigl.FullscreenControl());
 
-    _renderMarkers(markerData)
+    mapRef.current.on("click", (e) => {
+      const popup = new window.bkoigl.Popup({ focusAfterOpen: false });
+      addPopup(popup, "<h3>Barikoi HQ</h3>", 90.36402, 23.823731);
+    });
+    //This code block is for map on click POI popup change if you want to see the effect uncomment the code block from 58-71 and comment the code block from 52-55
 
-  }, [lng, lat, zoom, API_KEY, markerData, _renderMarkers])
-
+    // mapRef.current.on("click", (e) => {
+    //   const feature = mapRef.current.queryRenderedFeatures(e.point);
+    //   console.log(feature);
+    //   if (feature.length > 0 && feature[0].properties.name_en) {
+    //     const lng = e.lngLat.wrap().lng;
+    //     const lat = e.lngLat.wrap().lat;
+    //     if (feature) {
+    //       const popupContent = `<h3>${
+    //         feature[0].properties.name_en || feature[0].properties.name_en
+    //       }</h3>`;
+    //       addPopup(popup, popupContent, lng, lat);
+    //     }
+    //   }
+    // });
+    // Add Popup
+    function addPopup(popup, content, lng, lat) {
+      popup
+        .setLngLat([lng, lat])
+        .setHTML(content)
+        .addTo(mapRef.current)
+        .setMaxWidth("200px");
+    }
+  }, [lng, lat, zoom, API_KEY, markerData]);
 
   // On Load Render Intial Map
   useEffect(() => {
     _createMap();
     return () => {
       _destroyMap();
-    }
+    };
   }, [API_KEY, lng, lat, zoom, _createMap]);
 
   // Destroy Map
   const _destroyMap = () => {
     // Remove Map Instance
-    mapRef.current.remove()
-  }
+    mapRef.current.remove();
+  };
 
   return (
     <div className="map-wrap">
       <div ref={mapContainerRef} className="map" />
+      <button>Add popup</button>
     </div>
   );
-}
-export default MapGL
+};
+export default MapGL;
