@@ -2,7 +2,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import "./Map.css";
 
+// Provide the api key to your .env.local file
 const MAP_KEY = process.env.NEXT_PUBLIC_MAP_API_ACCESS_TOKEN;
+
 export default function Map() {
   const mapContainer = useRef(null);
   const map = useRef(null);
@@ -26,7 +28,7 @@ export default function Map() {
   useEffect(() => {
     map.current.on("load", () => {
       const marker = new window.bkoigl.Marker({
-        draggable: true,
+        // draggable: true, //if you want to drag the marker
         color: "green",
       })
         .setLngLat([lng, lat])
@@ -34,9 +36,10 @@ export default function Map() {
       // .setRotation(45); // if you want to rotate the marker
     });
   });
+
   return (
     <div className="map-wrap">
-      <div ref={mapContainer} className="map" id="map" />
+      <div ref={mapContainer} className="map" />
     </div>
   );
 }
