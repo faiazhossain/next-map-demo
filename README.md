@@ -10,4 +10,4 @@
 
 - Run your project you will see a map like this
 
-![Barikoi Custom Marker](https://github.com/faiazhossain/next-map-demo/blob/custom-marker/barikoi%20draw%20polygon.png)
+![Barikoi Draw Polygon](https://github.com/faiazhossain/next-map-demo/blob/draw-polygon/barikoi%20draw%20polygon.png)
