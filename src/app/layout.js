@@ -1,7 +1,7 @@
 import Script from "next/script";
 export const metadata = {
-  title: "Barikoi Maps Marker",
-  description: "This branch shows how to render markers on map",
+  title: "Barikoi Maps Draw Polygon",
+  description: "This branch shows how to draw polygon on map",
 };
 
 export default function RootLayout({ children }) {

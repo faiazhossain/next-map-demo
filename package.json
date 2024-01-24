@@ -12,6 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-draw": "^1.4.3",
     "bkoi-gl": "^1.1.1",
     "maplibre-gl": "^3.6.2",
     "next": "14.0.4",

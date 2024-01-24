@@ -2,6 +2,7 @@
 
 // Import Components
 import React, { useRef, useEffect, useState, useCallback } from "react";
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
 
 // Import Styles
 import "./Map.css";
@@ -17,82 +18,7 @@ const MapGL = () => {
   const [lat] = useState(23.823731);
   const [zoom] = useState(13);
   const [API_KEY] = useState(MAP_KEY);
-  const [markerData, setMarkerData] = useState([
-    {
-      longitude: 90.36408032377143,
-      latitude: 23.82374446922343,
-      type: 'default'
-    },
-    {
-      longitude: 90.36521608172615,
-      latitude: 23.818266581635168,
-      type: 'food'
-    }
-  ])
-
-  // Create Marker Instance
-  const _createMarker = useCallback((data) => {
-    if (!data) {
-      return null
-    }
-
-    if (!data.longitude || !data.latitude) {
-      return null
-    }
-
-    const lngLat = [data.longitude, data.latitude]
-
-    // Create Marker Element
-    const markerElement = _createMarkerElement(data)
-
-    // Add Marker
-    const marker = new window.bkoigl.Marker(markerElement)
-      .setLngLat(lngLat)
-
-    return { marker, data }
-  }, [])
-
-
-  // Render Markers
-  const _renderMarkers = useCallback((markerData) => {
-    if (!markerData || markerData.length <= 0) {
-      return
-    }
-
-    // Create Markers
-    markerData.forEach((m) => {
-      const marker = _createMarker(m)
-      if (marker && marker.marker) {
-        marker.marker.addTo(mapRef.current)
-      }
-    })
-  }, [_createMarker])
-
-
-  // Create Marker Element
-  const _createMarkerElement = (data) => {
-    let iconFile = 'default.png'
-    const type = data && data.type ? data.type.split(',')[0].toLowerCase() : ''
-
-    if (!iconFile) {
-      return null
-    }
-
-    if (type) {
-      iconFile = `${type}.png`
-    }
-
-
-    // Create a DOM element for marker
-    const icon = document.createElement('img')
-    icon.className = 'maplibregl-marker'
-    icon.src = `/icons/${iconFile}`
-    icon.style.width = iconFile === 'default.png' ? '45px' : '22px'
-    icon.style.height = iconFile === 'default.png' ? '45px' : '30px'
-    icon.style.cursor = 'pointer'
-
-    return icon
-  }
+  const [polygon, setPolygon] = useState({});
 
   // Create Map
   const _createMap = useCallback(() => {
@@ -104,13 +30,51 @@ const MapGL = () => {
       accessToken: `${API_KEY}`,
     });
 
+    // Add Draw Feature
+    const Draw = new MapboxDraw({
+      displayControlsDefault: false,
+      controls: {
+        polygon: true,
+        trash: true,
+      },
+    })
+
     // Add Controls
+    mapRef.current.addControl(Draw, 'top-right') // Draw Control
     mapRef.current.addControl(new window.bkoigl.NavigationControl(), 'bottom-right')
     mapRef.current.addControl(new window.bkoigl.FullscreenControl())
 
-    _renderMarkers(markerData)
+    // Disable Double Click Zoom Feature
+    mapRef.current.doubleClickZoom.disable()
 
-  }, [lng, lat, zoom, API_KEY, markerData, _renderMarkers])
+    // Create Polygon
+    mapRef.current.on('draw.create', () => {
+      const data = Draw.getAll()
+      setPolygon(data)
+    })
+
+
+    // Update Polygon
+    mapRef.current.on('draw.update', () => {
+      const data = Draw.getAll()
+      setPolygon(data)
+    })
+
+    // Delete Polygon
+    mapRef.current.on('draw.delete', () => {
+      setTimeout(() => {
+        Draw.deleteAll()
+        setPolygon({})
+      }, 0)
+    })
+
+  }, [lng, lat, zoom, API_KEY])
+
+  // Destroy Map
+  const _destroyMap = useCallback(() => {
+    // Remove Map Instance
+    mapRef.current.remove()
+  }, [])
 
 
   // On Load Render Intial Map
@@ -119,13 +83,7 @@ const MapGL = () => {
     return () => {
       _destroyMap();
     }
-  }, [API_KEY, lng, lat, zoom, _createMap]);
-
-  // Destroy Map
-  const _destroyMap = () => {
-    // Remove Map Instance
-    mapRef.current.remove()
-  }
+  }, [API_KEY, lng, lat, zoom, _createMap, _destroyMap]);
 
   return (
     <div className="map-wrap">
